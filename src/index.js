@@ -7,6 +7,9 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 
+//載入normalize.css
+import "normalize.css";
+
 //將react元件和HTML相互綁定
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
