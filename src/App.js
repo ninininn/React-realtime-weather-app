@@ -214,8 +214,8 @@ function App() {
             <RainIcon />
             {currentWeather.rainPossibility}
           </Rain>
-          {/* 綁定onClick時會呼叫handleClick方法*/}
-          <Refresh onClick={handleClick}>
+          {/* 綁定onClick時會呼叫fetchCurrentWeather方法*/}
+          <Refresh onClick={fetchCurrentWeather}>
             最後觀測時間：
             {new Intl.DateTimeFormat("zh-TW", {
               hour: "numeric",
