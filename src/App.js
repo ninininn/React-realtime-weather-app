@@ -1,6 +1,6 @@
 //透過import方式把CSS或其他JS檔載入
 //從react載入useState,useEffect方法
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 
 //用react-create-app提拱的ReactComponent元件引入svg圖示
 import { ReactComponent as DayCloudyIcon } from "./images/day-cloudy.svg";
@@ -153,8 +153,8 @@ function App() {
     observationTime: "2020-12-12 22:10:00",
   });
 
-  //定義handleClick方法
-  const handleClick = () => {
+  //將handleClick方法改為useEffect中函式參數
+  const fetchCurrentWeather = () => {
     fetch(
       `https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0003-001?Authorization=${AUTHORIZATION_KEY}&locationName=${LOCATION_NAME}`
     )
@@ -185,6 +185,14 @@ function App() {
         });
       });
   };
+
+  //加入useEffect方法
+  //useEffect參數需要帶入一個函式，這個函式會在 畫面轉譯完成 後被呼叫
+  //放入fetchCurrentWeather方法(原本的handleClick)及dependencies([])
+  useEffect(() => {
+    fetchCurrentWeather();
+  }, []);
+
   return (
     <ThemeProvider theme={theme[currentTheme]}>
       <Container>
