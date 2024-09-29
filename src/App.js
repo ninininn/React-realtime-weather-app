@@ -160,7 +160,7 @@ function App() {
   const [currentTheme, setCurrentTheme] = useState("light");
 
   //定義會使用到的資料狀態(參考API給的回應格式)
-  const [weatherElement, setweatherElement] = useState({
+  const [weatherElement, setWeatherElement] = useState({
     observationTime: new Date(),
     locationName: "",
     temperature: 0,
@@ -184,7 +184,7 @@ function App() {
   const fetchCurrentWeather = () => {
     //set方法中可以帶入function，取得前一次的資料狀態
     //setState(prevState =>{ return {...prevState,...updateValues};})
-    setweatherElement((prevState) => ({
+    setWeatherElement((prevState) => ({
       ...prevState,
       isLoading: true,
     }));
@@ -209,7 +209,7 @@ function App() {
         );
 
         // STEP 3：要使用到 React 組件中的資料
-        setweatherElement({
+        setWeatherElement({
           observationTime: locationData.time.obsTime,
           locationName: locationData.locationName,
           temperature: weatherElements.TEMP,
