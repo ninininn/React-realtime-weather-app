@@ -161,14 +161,24 @@ function App() {
 
   //定義會使用到的資料狀態(參考API給的回應格式)
   const [weatherElement, setweatherElement] = useState({
-    locationName: "臺北市",
-    description: "多雲時晴",
-    windSpeed: 1.1,
-    temperature: "22.9",
-    rainPossibility: 48.3,
-    observationTime: "2020-12-12 22:10:00",
-    isLoading: true, //新增載入中狀態屬性
+    observationTime: new Date(),
+    locationName: "",
+    temperature: 0,
+    windSpeed: 0,
+    description: "",
+    weatherCode: 0,
+    rainPossibility: 0,
+    comfortability: "",
+    isLoading: true,
   });
+
+  //加入useEffect方法
+  //useEffect參數需要帶入一個函式，這個函式會在 畫面轉譯完成 後被呼叫
+  //放入fetchCurrentWeather方法(原本的handleClick)及dependencies([])
+  useEffect(() => {
+    fetchCurrentWeather();
+    fetchWeatherForecast();
+  }, []);
 
   //將handleClick方法改為useEffect中函式參數
   const fetchCurrentWeather = () => {
@@ -204,20 +214,47 @@ function App() {
           locationName: locationData.locationName,
           temperature: weatherElements.TEMP,
           windSpeed: weatherElements.WDSD,
-          description: "多雲時晴",
-          rainPossibility: 60,
+          //移除此兩項假資料
+          //description: "多雲時晴",
+          //rainPossibility: 60,
           isLoading: false, //資料抓取完後載入狀態改為false
         });
       });
   };
 
-  //加入useEffect方法
-  //useEffect參數需要帶入一個函式，這個函式會在 畫面轉譯完成 後被呼叫
-  //放入fetchCurrentWeather方法(原本的handleClick)及dependencies([])
-  useEffect(() => {
-    fetchCurrentWeather();
-  }, []);
-  
+  //呼叫天氣預報API
+  const fetchWeatherForecast = () => {
+    fetch(
+      `https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=${AUTHORIZATION_KEY}&locationName=${LOCATION_NAME_FORECAST}`
+    )
+      .then((response) => response.json())
+      .then((data) => {
+        //取出某縣市的預報資料
+        const locationData = data.records.location[0];
+
+        const weatherElements = locationData.weatherElement.reduce(
+          (neededElements, item) => {
+            //只保留需要的 天氣現象、降雨機率、舒適度 資料
+            if (["Wx", "PoP", "CI"].includes(item.elementName)) {
+              //此API會回傳36小時資料，但只要用到最近12小時，所以取item
+              neededElements[item.elementName] = item.time[0].parameter;
+            }
+            return neededElements;
+          },
+          {}
+        );
+
+        setWeatherElement((prevState) => ({
+          ...prevState,
+          //多了weatherCode、comfortability的資料，要在useState預設屬性中放進去
+          description: weatherElements.Wx.parameterName,
+          weatherCode: weatherElements.Wx.parameterValue,
+          rainPossibility: weatherElements.PoP.parameterName,
+          comfortability: weatherElements.CI.parameterName,
+        }));
+      });
+  };
+
   //解構賦值簡化物件
   const {
     observationTime,
@@ -227,6 +264,7 @@ function App() {
     temperature,
     rainPossibility,
     isLoading,
+    comfortability,
   } = weatherElement;
 
   return (
@@ -234,7 +272,7 @@ function App() {
       <Container>
         <WeatherCard>
           <Location>{locationName}</Location>
-          <Description>{description}</Description>
+          <Description>{description}{comfortability}</Description>
           <CurrentWeather>
             <Temperature>
               {Math.round(temperature)}
@@ -250,8 +288,14 @@ function App() {
             <RainIcon />
             {rainPossibility}
           </Rain>
-          {/* 綁定onClick時會呼叫fetchCurrentWeather方法*/}
-          <Refresh onClick={fetchCurrentWeather} isLoading={isLoading}>
+          {/* 更新onClick時會呼叫fetchCurrentWeather及fetchWeatherForecast方法*/}
+          <Refresh
+            onClick={() => {
+              fetchCurrentWeather();
+              fetchWeatherForecast();
+            }}
+            isLoading={isLoading}
+          >
             最後觀測時間：
             {new Intl.DateTimeFormat("zh-TW", {
               hour: "numeric",
