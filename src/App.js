@@ -154,6 +154,68 @@ const LOCATION_NAME = "臺北";
 //第二隻API要帶入的值不同，另外宣告一個變數名稱
 const LOCATION_NAME_FORECAST = "臺北市";
 
+//！因為fetchCurrentWeather及fetWeatherForecast不再需要使用setWeatherElement方法
+//所以可以搬到<App/>元件外自由使用
+const fetchCurrentWeather = () => {
+  //加上return 直接回傳fetch API回傳的promise
+  return fetch(
+    `https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0003-001?Authorization=${AUTHORIZATION_KEY}&locationName=${LOCATION_NAME}`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      // STEP 1：定義 `locationData` 把回傳的資料中會用到的部分取出來
+      const locationData = data.records.location[0];
+
+      // STEP 2：將風速（WDSD）和氣溫（TEMP）的資料取出
+      const weatherElements = locationData.weatherElement.reduce(
+        (neededElements, item) => {
+          if (["WDSD", "TEMP"].includes(item.elementName)) {
+            neededElements[item.elementName] = item.elementValue;
+          }
+          return neededElements;
+        },
+        {}
+      );
+      return {
+        observationTime: locationData.time.obsTime,
+        locationName: locationData.locationName,
+        temperature: weatherElements.TEMP,
+        windSpeed: weatherElements.WDSD,
+      };
+    });
+};
+
+//呼叫天氣預報API
+const fetchWeatherForecast = () => {
+  return fetch(
+    `https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=${AUTHORIZATION_KEY}&locationName=${LOCATION_NAME_FORECAST}`
+  )
+    .then((response) => response.json())
+    .then((data) => {
+      //取出某縣市的預報資料
+      const locationData = data.records.location[0];
+
+      const weatherElements = locationData.weatherElement.reduce(
+        (neededElements, item) => {
+          //只保留需要的 天氣現象、降雨機率、舒適度 資料
+          if (["Wx", "PoP", "CI"].includes(item.elementName)) {
+            //此API會回傳36小時資料，但只要用到最近12小時，所以取item
+            neededElements[item.elementName] = item.time[0].parameter;
+          }
+          return neededElements;
+        },
+        {}
+      );
+
+      return {
+        description: weatherElements.Wx.parameterName,
+        weatherCode: weatherElements.Wx.parameterValue,
+        rainPossibility: weatherElements.PoP.parameterName,
+        comfortability: weatherElements.CI.parameterName,
+      };
+    });
+};
+
 //帶入APP元件使用
 function App() {
   //使用useState並定義currentTheme預設值為light
@@ -176,84 +238,31 @@ function App() {
   //useEffect參數需要帶入一個函式，這個函式會在 畫面轉譯完成 後被呼叫
   //放入fetchCurrentWeather方法(原本的handleClick)及dependencies([])
   useEffect(() => {
-    fetchCurrentWeather();
-    fetchWeatherForecast();
+    //step1. 定義async Function fetchData()
+    const fetchData = async () => {
+      //在抓取資料前，先把isLoading狀態改為true
+      setWeatherElement((prevState) => ({
+        ...prevState,
+        isLoading: true,
+      }));
+      //step2. 使用promise.all搭配await，等待兩支API都取得回應後才繼續
+      //直接透過陣列的解構賦值來取出Promise.all回傳的資料
+      const [currentWeather, weatherForecast] = await Promise.all([
+        fetchCurrentWeather(),
+        fetchWeatherForecast(),
+      ]);
+
+      //把取得的資料透過物件的解構賦值放入
+      setWeatherElement({
+        ...currentWeather,
+        ...weatherForecast,
+        isLoading: false,
+      });
+    };
+
+    //step3. 在useEffect中呼叫此fetchData()
+    fetchData();
   }, []);
-
-  //將handleClick方法改為useEffect中函式參數
-  const fetchCurrentWeather = () => {
-    //set方法中可以帶入function，取得前一次的資料狀態
-    //setState(prevState =>{ return {...prevState,...updateValues};})
-    setWeatherElement((prevState) => ({
-      ...prevState,
-      isLoading: true,
-    }));
-
-    fetch(
-      `https://opendata.cwb.gov.tw/api/v1/rest/datastore/O-A0003-001?Authorization=${AUTHORIZATION_KEY}&locationName=${LOCATION_NAME}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        // STEP 1：定義 `locationData` 把回傳的資料中會用到的部分取出來
-        const locationData = data.records.location[0];
-
-        // STEP 2：將風速（WDSD）和氣溫（TEMP）的資料取出
-        const weatherElements = locationData.weatherElement.reduce(
-          (neededElements, item) => {
-            if (["WDSD", "TEMP"].includes(item.elementName)) {
-              neededElements[item.elementName] = item.elementValue;
-            }
-            return neededElements;
-          },
-          {}
-        );
-
-        // STEP 3：要使用到 React 組件中的資料
-        setWeatherElement({
-          observationTime: locationData.time.obsTime,
-          locationName: locationData.locationName,
-          temperature: weatherElements.TEMP,
-          windSpeed: weatherElements.WDSD,
-          //移除此兩項假資料
-          //description: "多雲時晴",
-          //rainPossibility: 60,
-          isLoading: false, //資料抓取完後載入狀態改為false
-        });
-      });
-  };
-
-  //呼叫天氣預報API
-  const fetchWeatherForecast = () => {
-    fetch(
-      `https://opendata.cwb.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=${AUTHORIZATION_KEY}&locationName=${LOCATION_NAME_FORECAST}`
-    )
-      .then((response) => response.json())
-      .then((data) => {
-        //取出某縣市的預報資料
-        const locationData = data.records.location[0];
-
-        const weatherElements = locationData.weatherElement.reduce(
-          (neededElements, item) => {
-            //只保留需要的 天氣現象、降雨機率、舒適度 資料
-            if (["Wx", "PoP", "CI"].includes(item.elementName)) {
-              //此API會回傳36小時資料，但只要用到最近12小時，所以取item
-              neededElements[item.elementName] = item.time[0].parameter;
-            }
-            return neededElements;
-          },
-          {}
-        );
-
-        setWeatherElement((prevState) => ({
-          ...prevState,
-          //多了weatherCode、comfortability的資料，要在useState預設屬性中放進去
-          description: weatherElements.Wx.parameterName,
-          weatherCode: weatherElements.Wx.parameterValue,
-          rainPossibility: weatherElements.PoP.parameterName,
-          comfortability: weatherElements.CI.parameterName,
-        }));
-      });
-  };
 
   //解構賦值簡化物件
   const {
@@ -272,7 +281,10 @@ function App() {
       <Container>
         <WeatherCard>
           <Location>{locationName}</Location>
-          <Description>{description}{comfortability}</Description>
+          <Description>
+            {description}
+            {comfortability}
+          </Description>
           <CurrentWeather>
             <Temperature>
               {Math.round(temperature)}
