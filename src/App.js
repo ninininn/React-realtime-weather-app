@@ -2,8 +2,11 @@
 //從react載入useState,useEffect方法
 import React, { useState, useEffect } from "react";
 
+//匯入拆分的WeatherIcon元件
+import WeatherIcon from "./components/WeatherIcon";
+// import { ReactComponent as DayCloudyIcon } from "./images/day-cloudy.svg";
+
 //用react-create-app提拱的ReactComponent元件引入svg圖示
-import { ReactComponent as DayCloudyIcon } from "./images/day-cloudy.svg";
 import { ReactComponent as RainIcon } from "./images/rain.svg";
 import { ReactComponent as AirFlowIcon } from "./images/airFlow.svg";
 import { ReactComponent as RefreshIcon } from "./images/refresh.svg";
@@ -121,9 +124,9 @@ const Refresh = styled.div`
 
 //(emotion)將原本存在的元件新增樣式
 //新元件 = styled(<原有元件>)
-const DayCloudy = styled(DayCloudyIcon)`
-  flex-basis: 30%;
-`;
+// const DayCloudy = styled(DayCloudyIcon)`
+//   flex-basis: 30%;
+// `;
 
 //定義主題色搭配
 const theme = {
@@ -291,7 +294,7 @@ function App() {
               {Math.round(temperature)}
               <Celsius>C</Celsius>
             </Temperature>
-            <DayCloudy />
+            <WeatherIcon />
           </CurrentWeather>
           <AirFlow>
             <AirFlowIcon />
