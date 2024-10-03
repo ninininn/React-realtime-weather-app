@@ -278,6 +278,7 @@ function App() {
     rainPossibility,
     isLoading,
     comfortability,
+    weatherCode, //從weatherElement中取出weatherCode資料
   } = weatherElement;
 
   return (
@@ -294,7 +295,8 @@ function App() {
               {Math.round(temperature)}
               <Celsius>C</Celsius>
             </Temperature>
-            <WeatherIcon />
+            {/* 將weatherCode 和moment以props傳入weatherIcon */}
+            <WeatherIcon weatherCode={weatherCode} moment='night' />
           </CurrentWeather>
           <AirFlow>
             <AirFlowIcon />

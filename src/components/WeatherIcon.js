@@ -1,5 +1,6 @@
 //拆分原本在App.js的天氣圖示呈現 React元件
-import React from "react";
+//載入react hooks - useMemo()
+import React, { useMemo } from "react";
 import styled from "@emotion/styled";
 
 //SVG圖檔路徑
@@ -77,14 +78,18 @@ const weatherCode2Type = (weatherCode) => {
 
 // 假設從 API 取得的天氣代碼是 1
 const weatherCode = 1;
-console.log(weatherCode2Type(weatherCode)); // isClear
 
-const WeatherIcon = () => {
-  return (
-    <IconContainer>
-      <DayCloudyIcon />
-    </IconContainer>
+//透過props取出App元件傳入的weatherCode及moment資料
+const WeatherIcon = ({ weatherCode, moment }) => {
+  //使用useMemo
+  const weatherType = useMemo(
+    () => weatherCode2Type(weatherCode),
+    [weatherCode]
   );
+
+  //根據天氣型態和moment取出對應圖示
+  const weatherIcon = weatherIcons[moment][weatherType];
+  return <IconContainer>{weatherIcon}</IconContainer>;
 };
 
 export default WeatherIcon;
