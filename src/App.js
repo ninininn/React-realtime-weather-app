@@ -1,8 +1,8 @@
 //匯入getMoment()
 import { getMoment } from "./utils/helpers";
 //透過import方式把CSS或其他JS檔載入
-//從react載入useState,useEffect方法
-import React, { useState, useEffect } from "react";
+//從react載入useState,useEffect,useCallback,useMemo方法
+import React, { useState, useEffect, useCallback, useMemo } from "react";
 
 //匯入拆分的WeatherIcon元件
 import WeatherIcon from "./components/WeatherIcon";
@@ -228,7 +228,8 @@ function App() {
   const [currentTheme, setCurrentTheme] = useState("light");
 
   //使用getMoment()判斷白天晚上，再帶入<WeatherIcon/> 的moment中
-  const moment = getMoment(LOCATION_NAME);
+  //TODO 等使用者可以修改地區時，要修改裡面的參數(目前dependencies先設定為[])
+  const moment = useMemo(() => getMoment(LOCATION_NAME), []);
   //定義會使用到的資料狀態(參考API給的回應格式)
   const [weatherElement, setWeatherElement] = useState({
     observationTime: new Date(),
