@@ -230,6 +230,11 @@ function App() {
   //使用getMoment()判斷白天晚上，再帶入<WeatherIcon/> 的moment中
   //TODO 等使用者可以修改地區時，要修改裡面的參數(目前dependencies先設定為[])
   const moment = useMemo(() => getMoment(LOCATION_NAME), []);
+  
+  useEffect(() => {
+    //依據moment決定要使用亮色or暗色主題
+    setCurrentTheme(moment === "day" ? "light" : "dark");
+  }, [moment]);
   //定義會使用到的資料狀態(參考API給的回應格式)
   const [weatherElement, setWeatherElement] = useState({
     observationTime: new Date(),
