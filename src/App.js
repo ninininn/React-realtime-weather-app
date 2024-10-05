@@ -1,3 +1,5 @@
+//匯入getMoment()
+import { getMoment } from "./utils/helpers";
 //透過import方式把CSS或其他JS檔載入
 //從react載入useState,useEffect方法
 import React, { useState, useEffect } from "react";
@@ -155,7 +157,7 @@ const AUTHORIZATION_KEY = "CWA-F0C23CB4-9E98-4689-961C-76B38B358FA3";
 const LOCATION_NAME = "臺中市";
 
 //第二隻API要帶入的值不同，另外宣告一個變數名稱
-const LOCATION_NAME_FORECAST = "466920";
+const LOCATION_NAME_FORECAST = "467490";
 
 //！因為fetchCurrentWeather及fetWeatherForecast不再需要使用setWeatherElement方法
 //所以可以搬到<App/>元件外自由使用
@@ -163,7 +165,7 @@ const LOCATION_NAME_FORECAST = "466920";
 const fetchCurrentWeather = () => {
   //加上return 直接回傳fetch API回傳的promise
   return fetch(
-    `https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0003-001?Authorization=CWA-F0C23CB4-9E98-4689-961C-76B38B358FA3&StationId=467490`
+    `https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0003-001?Authorization=${AUTHORIZATION_KEY}&StationId=${LOCATION_NAME_FORECAST}`
   )
     .then((response) => response.json())
     .then((data) => {
@@ -192,7 +194,7 @@ const fetchCurrentWeather = () => {
 //呼叫天氣預報API
 const fetchWeatherForecast = () => {
   return fetch(
-    `https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=CWA-F0C23CB4-9E98-4689-961C-76B38B358FA3&locationName=%E8%87%BA%E4%B8%AD%E5%B8%82`
+    `https://opendata.cwa.gov.tw/api/v1/rest/datastore/F-C0032-001?Authorization=${AUTHORIZATION_KEY}&locationName=${LOCATION_NAME}`
   )
     .then((response) => response.json())
     .then((data) => {
@@ -225,6 +227,8 @@ function App() {
   //使用useState並定義currentTheme預設值為light
   const [currentTheme, setCurrentTheme] = useState("light");
 
+  //使用getMoment()判斷白天晚上，再帶入<WeatherIcon/> 的moment中
+  const moment = getMoment(LOCATION_NAME);
   //定義會使用到的資料狀態(參考API給的回應格式)
   const [weatherElement, setWeatherElement] = useState({
     observationTime: new Date(),
@@ -296,7 +300,7 @@ function App() {
               <Celsius>C</Celsius>
             </Temperature>
             {/* 將weatherCode 和moment以props傳入weatherIcon */}
-            <WeatherIcon weatherCode={weatherCode} moment='night' />
+            <WeatherIcon weatherCode={weatherCode} moment={moment} />
           </CurrentWeather>
           <AirFlow>
             <AirFlowIcon />
