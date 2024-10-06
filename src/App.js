@@ -6,7 +6,8 @@ import React, { useState, useEffect, useCallback, useMemo } from "react";
 
 //載入custom hooks
 import useWeatherAPI from "./hooks/useWeatherAPI";
-
+//weatherSetting
+import WeatherSetting from "./views/WeatherSetting";
 //移除引用App.css，載入emotion
 // import "./App.css";
 import styled from "@emotion/styled";
@@ -54,6 +55,9 @@ const LOCATION_NAME_FORECAST = "467490";
 
 //帶入APP元件使用
 function App() {
+  //定義頁面state
+  const [currentPage, setCurrentpage] = useState("WeatherCard");
+
   //使用useState並定義currentTheme預設值為light
   const [currentTheme, setCurrentTheme] = useState("light");
 
@@ -74,12 +78,15 @@ function App() {
   return (
     <ThemeProvider theme={theme[currentTheme]}>
       <Container>
-        {/* weatherCard需要的資料透過 */}
-        <WeatherCard
-          weatherElement={weatherElement}
-          moment={moment}
-          fetchData={fetchData}
-        />
+        {/*條件轉譯決定要呈現哪個元件 */}
+        {currentPage === "WeatherCard" && (
+          <WeatherCard
+            weatherElement={weatherElement}
+            moment={moment}
+            fetchData={fetchData}
+          />
+        )}
+        {currentPage === "WeatherSetting" && <WeatherSetting />}
       </Container>
     </ThemeProvider>
   );
