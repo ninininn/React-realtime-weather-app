@@ -1,4 +1,5 @@
-import { useState, useEffect, useCallback } from "react"; //！因為fetchCurrentWeather及fetWeatherForecast不再需要使用setWeatherElement方法
+import { useState, useEffect, useCallback } from "react"; 
+//！因為fetchCurrentWeather及fetWeatherForecast不再需要使用setWeatherElement方法
 //所以可以搬到<App/>元件外自由使用
 //custom Hooks
 
