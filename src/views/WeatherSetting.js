@@ -1,5 +1,5 @@
 // ./src/views/WeatherSetting.js
-import React, { useState } from "react";
+import React, { useRef } from "react";
 import styled from "@emotion/styled";
 //匯入對應地區名稱物件
 import { availableLocations } from "../utils/helpers";
@@ -97,21 +97,26 @@ const Save = styled.button`
 
 //JSX
 const WeatherSetting = ({ handleCurrentPageChange }) => {
-  const [locationName, setLocationName] = useState("臺中市");
-
-  const handleChange = (e) => {
-    setLocationName(e.target.value);
-  };
+  //用useRef建立一個ref
+  const inputLocationRef = useRef(null);
 
   const handleSave = () => {
-    console.log("locationName", locationName);
+    //透過inputLocationRef.current取得透過ref指稱的HTML元素
+    console.log("value", inputLocationRef.current.value);
   };
 
   return (
     <WeatherSettingWrapper>
       <Title>設定</Title>
       <StyledLabel htmlFor='location'>地區</StyledLabel>
-      <StyledSelect id='location' name='location' onChange={handleChange}>
+      {/*將useRef回傳的物件指稱為該input元素 */}
+      <StyledSelect
+        id='location'
+        name='location'
+        ref={inputLocationRef}
+        //透過defaultValue設定預設值
+        defaultValue={"臺中市"}
+      >
         {/*定義可以選擇的地區選項 */}
         {availableLocations.map((location) => (
           <option value={location.cityName} key={location.cityName}>
