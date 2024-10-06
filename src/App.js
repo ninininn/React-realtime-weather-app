@@ -49,8 +49,12 @@ const AUTHORIZATION_KEY = "CWA-F0C23CB4-9E98-4689-961C-76B38B358FA3";
 
 //帶入APP元件使用
 function App() {
+  //localStorage中取出先前保存的地區，若沒有保存過則給預設值
+  const storageCity = localStorage.getItem("cityName") || "臺中市";
+
   //1. 定義currentCity
-  const [currentCity, setCurrentCity] = useState("臺中市");
+  const [currentCity, setCurrentCity] = useState(storageCity);
+
   //3. 找出每隻API要帶入的locationName
   //4. 使用useMemo把取得的資料保存
   const currentLocation = useMemo(

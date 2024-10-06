@@ -109,6 +109,8 @@ const WeatherSetting = ({
   };
 
   const handleSave = () => {
+    //點擊儲存時一起存到localStorage
+    localStorage.setItem("cityName", locationName);
     handleCurrentCityChange(locationName);
     handleCurrentPageChange("WeatherCard"); //切換回WeatherCard頁面
   };
