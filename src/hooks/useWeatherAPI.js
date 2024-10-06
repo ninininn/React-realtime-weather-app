@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react"; 
+import { useState, useEffect, useCallback } from "react";
 //！因為fetchCurrentWeather及fetWeatherForecast不再需要使用setWeatherElement方法
 //所以可以搬到<App/>元件外自由使用
 //custom Hooks
@@ -6,7 +6,7 @@ import { useState, useEffect, useCallback } from "react";
 const fetchCurrentWeather = ({ authorizationKey, locationName }) => {
   //加上return 直接回傳fetch API回傳的promise
   return fetch(
-    `https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0003-001?Authorization=${authorizationKey}&StationId=${locationName}`
+    `https://opendata.cwa.gov.tw/api/v1/rest/datastore/O-A0003-001?Authorization=${authorizationKey}&StationName=${locationName}`
   )
     .then((response) => response.json())
     .then((data) => {

@@ -1,5 +1,5 @@
-//匯入getMoment()
-import { getMoment } from "./utils/helpers";
+//匯入getMoment()、2. findLocation()
+import { getMoment, findLocation } from "./utils/helpers";
 //透過import方式把CSS或其他JS檔載入
 //從react載入useState,useEffect,useCallback,useMemo方法
 import React, { useState, useEffect, useCallback, useMemo } from "react";
@@ -47,18 +47,27 @@ const theme = {
 //將自己的授權碼存為一個常數
 const AUTHORIZATION_KEY = "CWA-F0C23CB4-9E98-4689-961C-76B38B358FA3";
 
-//針對某地區發送API請求
-const LOCATION_NAME = "臺中市";
-
-//第二隻API要帶入的值不同，另外宣告一個變數名稱
-const LOCATION_NAME_FORECAST = "467490";
-
 //帶入APP元件使用
 function App() {
+  //1. 定義currentCity
+  const [currentCity, setCurrentCity] = useState("臺中市");
+  //3. 找出每隻API要帶入的locationName
+  //4. 使用useMemo把取得的資料保存
+  const currentLocation = useMemo(
+    () => findLocation(currentCity),
+    [currentCity]
+  );
+
+  const handleCurrentCityChange = (currentCity) => {
+    setCurrentCity(currentCity);
+  };
+  //5. 透過解構賦值取出currentLocation資料
+  const { cityName, locationName, sunriseCityName } = currentLocation;
+
   //定義頁面state
-  const [currentPage, setCurrentpage] = useState("WeatherCard");
+  const [currentPage, setCurrentPage] = useState("WeatherCard");
   const handleCurrentPageChange = (currentPage) => {
-    setCurrentpage(currentPage);
+    setCurrentPage(currentPage);
   };
 
   //使用useState並定義currentTheme預設值為light
@@ -66,16 +75,18 @@ function App() {
 
   //使用getMoment()判斷白天晚上，再帶入<WeatherIcon/> 的moment中
   //TODO 等使用者可以修改地區時，要修改裡面的參數(目前dependencies先設定為[])
-  const moment = useMemo(() => getMoment(LOCATION_NAME), []);
+  //6. 在getMoment參數中換成sunriseCityName
+  const moment = useMemo(() => getMoment(sunriseCityName), [sunriseCityName]);
   useEffect(() => {
     //依據moment決定要使用亮色or暗色主題
     setCurrentTheme(moment === "day" ? "light" : "dark");
   }, [moment]);
 
   //使用hooks-weatherAPI
+  //7. 在useWeatherAPI中的參數改成locationName和cityName
   const [weatherElement, fetchData] = useWeatherAPI({
-    locationName: LOCATION_NAME_FORECAST,
-    cityName: LOCATION_NAME,
+    locationName,
+    cityName,
     authorizationKey: AUTHORIZATION_KEY,
   });
   return (
@@ -84,14 +95,19 @@ function App() {
         {/*條件轉譯決定要呈現哪個元件 */}
         {currentPage === "WeatherCard" && (
           <WeatherCard
+            cityName={cityName}
             weatherElement={weatherElement}
             moment={moment}
             fetchData={fetchData}
-            handleCurrentPage={handleCurrentPageChange}
+            handleCurrentPageChange={handleCurrentPageChange}
           />
         )}
         {currentPage === "WeatherSetting" && (
-          <WeatherSetting handleCurrentPageChange={handleCurrentPageChange} />
+          <WeatherSetting
+            cityName={cityName}
+            handleCurrentCityChange={handleCurrentCityChange}
+            handleCurrentPageChange={handleCurrentPageChange}
+          />
         )}
       </Container>
     </ThemeProvider>
