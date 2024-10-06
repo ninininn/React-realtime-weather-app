@@ -1,7 +1,7 @@
 {
   "files": {
     "main.css": "/React-realtime-weather-app/static/css/main.1b830245.css",
-    "main.js": "/React-realtime-weather-app/static/js/main.57988a74.js",
+    "main.js": "/React-realtime-weather-app/static/js/main.951a9268.js",
     "static/js/453.0ccb7fb4.chunk.js": "/React-realtime-weather-app/static/js/453.0ccb7fb4.chunk.js",
     "static/media/day-snowing.svg": "/React-realtime-weather-app/static/media/day-snowing.ba1cbc7669611ee425e874e171d02e70.svg",
     "static/media/night-snowing.svg": "/React-realtime-weather-app/static/media/night-snowing.f00de84c0d9bed3a871ecc6fdd79f1ca.svg",
@@ -18,17 +18,17 @@
     "static/media/night-cloudy.svg": "/React-realtime-weather-app/static/media/night-cloudy.00520390112bf6ab4725ed66e46596e5.svg",
     "static/media/rain.svg": "/React-realtime-weather-app/static/media/rain.8e10718e150267e9dc74f9cde4f669ea.svg",
     "static/media/day-clear.svg": "/React-realtime-weather-app/static/media/day-clear.8857a9c17ded7f694ed227635f2939fa.svg",
+    "index.html": "/React-realtime-weather-app/index.html",
     "static/media/refresh.svg": "/React-realtime-weather-app/static/media/refresh.e352fc8bae35a5d76241e0bd9ec1d4c5.svg",
     "static/media/airFlow.svg": "/React-realtime-weather-app/static/media/airFlow.93b49bb5f452a711b4783afb6e683672.svg",
     "static/media/loading.svg": "/React-realtime-weather-app/static/media/loading.f8d56fd58925a1aaab4f80f1d8865c03.svg",
     "static/media/night-clear.svg": "/React-realtime-weather-app/static/media/night-clear.94eb7d671bc6d4dec6aa0b47038954df.svg",
-    "index.html": "/React-realtime-weather-app/index.html",
     "main.1b830245.css.map": "/React-realtime-weather-app/static/css/main.1b830245.css.map",
-    "main.57988a74.js.map": "/React-realtime-weather-app/static/js/main.57988a74.js.map",
+    "main.951a9268.js.map": "/React-realtime-weather-app/static/js/main.951a9268.js.map",
     "453.0ccb7fb4.chunk.js.map": "/React-realtime-weather-app/static/js/453.0ccb7fb4.chunk.js.map"
   },
   "entrypoints": [
     "static/css/main.1b830245.css",
-    "static/js/main.57988a74.js"
+    "static/js/main.951a9268.js"
   ]
 }
