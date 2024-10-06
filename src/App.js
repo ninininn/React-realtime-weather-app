@@ -57,6 +57,9 @@ const LOCATION_NAME_FORECAST = "467490";
 function App() {
   //定義頁面state
   const [currentPage, setCurrentpage] = useState("WeatherCard");
+  const handleCurrentPageChange = (currentPage) => {
+    setCurrentpage(currentPage);
+  };
 
   //使用useState並定義currentTheme預設值為light
   const [currentTheme, setCurrentTheme] = useState("light");
@@ -84,9 +87,12 @@ function App() {
             weatherElement={weatherElement}
             moment={moment}
             fetchData={fetchData}
+            handleCurrentPage={handleCurrentPageChange}
           />
         )}
-        {currentPage === "WeatherSetting" && <WeatherSetting />}
+        {currentPage === "WeatherSetting" && (
+          <WeatherSetting handleCurrentPageChange={handleCurrentPageChange} />
+        )}
       </Container>
     </ThemeProvider>
   );

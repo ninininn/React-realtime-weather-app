@@ -96,7 +96,7 @@ const Save = styled.button`
 `;
 
 //JSX
-const WeatherSetting = () => {
+const WeatherSetting = ({ handleCurrentPageChange }) => {
   return (
     <WeatherSettingWrapper>
       <Title>設定</Title>
@@ -111,7 +111,8 @@ const WeatherSetting = () => {
       </StyledSelect>
 
       <ButtonGroup>
-        <Back>返回</Back>
+        {/*呼叫handleCurrentPageChange方法換頁 */}
+        <Back onClick={() => handleCurrentPageChange("WeatherCArd")}>返回</Back>
         <Save>儲存</Save>
       </ButtonGroup>
     </WeatherSettingWrapper>
