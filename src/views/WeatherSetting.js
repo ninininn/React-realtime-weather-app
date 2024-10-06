@@ -97,11 +97,21 @@ const Save = styled.button`
 
 //JSX
 const WeatherSetting = ({ handleCurrentPageChange }) => {
+  const [locationName, setLocationName] = useState("臺中市");
+
+  const handleChange = (e) => {
+    setLocationName(e.target.value);
+  };
+
+  const handleSave = () => {
+    console.log("locationName", locationName);
+  };
+
   return (
     <WeatherSettingWrapper>
       <Title>設定</Title>
       <StyledLabel htmlFor='location'>地區</StyledLabel>
-      <StyledSelect id='location' name='location'>
+      <StyledSelect id='location' name='location' onChange={handleChange}>
         {/*定義可以選擇的地區選項 */}
         {availableLocations.map((location) => (
           <option value={location.cityName} key={location.cityName}>
@@ -113,7 +123,7 @@ const WeatherSetting = ({ handleCurrentPageChange }) => {
       <ButtonGroup>
         {/*呼叫handleCurrentPageChange方法換頁 */}
         <Back onClick={() => handleCurrentPageChange("WeatherCArd")}>返回</Back>
-        <Save>儲存</Save>
+        <Save onClick={handleSave}>儲存</Save>
       </ButtonGroup>
     </WeatherSettingWrapper>
   );
